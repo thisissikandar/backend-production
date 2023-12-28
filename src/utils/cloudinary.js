@@ -20,3 +20,5 @@ try {
     fs.unlinkSync(localFilePath) //Removed the 
 }
 }
+
+export {uploadOnCloudinary}

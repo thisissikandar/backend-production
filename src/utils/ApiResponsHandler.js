@@ -1,4 +1,4 @@
-class ApiErrorHaandler {
+class ApiResponseHaandler {
 
     constructor(
         statusCode,
@@ -12,4 +12,4 @@ class ApiErrorHaandler {
     }
 }
 
-export {ApiErrorHaandler}
+export {ApiResponseHaandler}
