@@ -3,6 +3,7 @@ import { ApiErrorHaandler } from "../utils/ApiErrorHandler.js";
 import { ApiResponseHaandler } from "../utils/ApiResponsHandler.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -23,13 +24,14 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
-  const { username, email, password } = req.body;
+  const { username, fullName, email, password } = req.body;
   //  if (fullname) {
   //     throw new ApiErrorHaandler(400,"Fullname is required")
   //  }
 
-  console.log("request", req.body);
-  if ([email, username, password].some((field) => field?.trim() === "")) {
+  if (
+    [email, fullName, username, password].some((field) => field?.trim() === "")
+  ) {
     throw new ApiErrorHaandler(400, "All fields are Required");
   }
 
@@ -43,19 +45,40 @@ const registerUser = asyncHandler(async (req, res) => {
       "User with Email or Username Already Exist"
     );
   }
+  const avatarLocalPath = req.files?.avatar[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files?.coverImage) &&
+    req.files?.coverImage.length > 0
+  ) {
+   coverImageLocalPath= req.files?.coverImage[0]?.path;
+  }
+
+  if (!avatarLocalPath) {
+    throw new ApiErrorHaandler(400, "avatar is required");
+  }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  if (!avatar) {
+    throw new ApiErrorHaandler(400, "avatar is required");
+  }
   const user = await User.create({
     email,
+    fullName,
     password,
-    username,
+    username: username.toLowerCase(),
+    avatar: avatar?.url,
+    coverImage: coverImage?.url || "",
   });
 
-  console.log("User", user);
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
 
-  console.log("Creatred user ::", createdUser);
   if (!createdUser) {
     throw new ApiErrorHaandler(500, "Somthing Went Wrong While Register User");
   }
@@ -172,7 +195,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true,
     };
-    const { accessToken, newRefreshToken } =
+    const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefereshTokens(user?._id);
 
     return res
