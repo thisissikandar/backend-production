@@ -23,6 +23,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
+  console.log("req.body ::",req.body);
   // get user details from frontend
   const { username, fullName, email, password } = req.body;
   //  if (fullname) {
