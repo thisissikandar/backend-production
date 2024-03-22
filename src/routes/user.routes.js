@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   changeCurrentPassword,
   getCurrentUser,
+  getUserChannelProfile,
   logOutUser,
   loginUser,
   refreshAccessToken,
@@ -30,14 +31,20 @@ router.route("/register").post(
 );
 
 router.route("/login").post(loginUser);
-router.route("/refresh-token").post(refreshAccessToken);
 
 // Secured Routes
 router.route("/logout").post(verifyJWT, logOutUser);
-router.route("/update-account").post(verifyJWT, updateAccountDetails);
-router.route("/update-avatar").post(verifyJWT,upload.single("avatar"), updateUserAvatar);
-router.route("/update-cover-image").post(verifyJWT,upload.single("coverImage"), updateUserCoverImage);
-router.route("/get-current-user").post(verifyJWT, getCurrentUser);
+router.route("/refresh-token").post(refreshAccessToken);
 router.route("/change-current-password").post(verifyJWT, changeCurrentPassword);
+router.route("/get-current-user").get(verifyJWT, getCurrentUser);
+router.route("/update-account").patch(verifyJWT, updateAccountDetails);
+router
+  .route("/update-avatar")
+  .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
+router
+  .route("/update-cover-image")
+  .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
+router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
+router.route("/watch-history").get(verifyJWT, updateUserCoverImage);
 
 export default router;
