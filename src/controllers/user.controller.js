@@ -212,6 +212,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiErrorHandler(401, error?.message || "Invalid Refresh Token");
   }
 });
+
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
@@ -242,6 +243,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
       )
     );
 });
+
 const updateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body;
 
@@ -267,6 +269,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
       new ApiResponseHaandler(200, user, "Account Detail Updated Succcessfully")
     );
 });
+
 const updateUserAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.file?.path;
 
@@ -326,6 +329,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
       new ApiResponseHaandler(200, user, "Account Detail Updated Succcessfully")
     );
 });
+
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
 
