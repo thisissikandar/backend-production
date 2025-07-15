@@ -17,9 +17,10 @@ app.use(
   
   //routes import
 import userRouter from './routes/user.routes.js'
+import { errorHandler } from "./middlewares/error.middlewalre.js";
 
 //routes declaration
 app.use("/api/v1/users", userRouter)
   
-  
+app.use(errorHandler)
 export { app };

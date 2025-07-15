@@ -40,7 +40,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiErrorHandler(409, "User with Email or Username Already Exist");
   }
-
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
@@ -370,30 +369,29 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         isSubscribed: {
           $cond: {
             if: { $in: [req.user?._id, "$subscribers.subscriber"] },
-            then:true,
-            else:false
+            then: true,
+            else: false,
           },
         },
       },
     },
     {
-      $project:{
-        fullName:1,
-        username:1,
-        isSubscribed:1,
-        channelsSubscribedToCount:1,
-        subscribersCount:1,
-        avatar:1,
-        coverImage:1,
-        email:1
-
-      }
-    }
+      $project: {
+        fullName: 1,
+        username: 1,
+        isSubscribed: 1,
+        channelsSubscribedToCount: 1,
+        subscribersCount: 1,
+        avatar: 1,
+        coverImage: 1,
+        email: 1,
+      },
+    },
   ]);
 
-if (!channel?.length) {
-  throw new ApiErrorHandler(404,"Channel not exist")
-}
+  if (!channel?.length) {
+    throw new ApiErrorHandler(404, "Channel not exist");
+  }
   return res
     .status(200)
     .json(
