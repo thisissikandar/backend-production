@@ -388,7 +388,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       },
     },
   ]);
-
+  console.log("channel", channel);
   if (!channel?.length) {
     throw new ApiErrorHandler(404, "Channel not exist");
   }
@@ -404,7 +404,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
       $match: {
-        _id: mongoose.Types.ObjectId(req.user._id),
+        _id: new mongoose.Types.ObjectId(req.user._id),
       },
     },
     {
@@ -431,6 +431,13 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               ],
             },
           },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
         ],
       },
     },
@@ -442,7 +449,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
     },
   ]);
-
+  console.log("user", user);
   return res
     .status(200)
     .json(

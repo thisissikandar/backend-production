@@ -2,8 +2,8 @@ class ApiResponseHaandler {
 
     constructor(
         statusCode,
+        data,
         message= "Success",
-        data
     ) {
         this.statusCode = statusCode
         this.message= message
